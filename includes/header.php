@@ -13,11 +13,8 @@
    </div>
    <nav>
       <a class="item" href="inicio.php">Inicio</a>
-      <a class="item" href="empresa.php">A Empresa</a>
-      <a class="item" href="quefazemos.php">O Que Fazemos</a>
-      <a class="item" href="qualidade.php">Qualidade</a>
-      <a class="item" href="noticias.php">Notícias</a>
-      <a class="item" href="contactos.php">Contactos</a>
+      <a class="item" href="noticias.php">Noticias</a>
+      <a class="item" href="mensagens.php">Mensagens</a>
    </nav>
    <div class="div-footing">
       <div class="user">
