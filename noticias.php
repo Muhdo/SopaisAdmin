@@ -79,8 +79,9 @@
                <input type="text" name="titulo">
             </p>
             <p>Imagem Cabeçalho:<br>
-               <label for="imagem" class="form-filebutton">Carregar Imagem</label>
-               <input type="file" id="imagem" name="imagem" accept="image/png, image/jpeg, image/JPEG, image/jpeg2000, image/jpg">
+               <label class="form-filebutton">Carregar Imagem
+                  <input type="file" id="imagem" name="imagem" accept="image/png, image/jpeg, image/JPEG, image/jpeg2000, image/jpg">
+               </label>
             </p>
             <p>Notícia:<br>
                <textarea id="editor" name="editor"></textarea>
@@ -92,8 +93,8 @@
       <script>
          tinymce.init({
             selector: '#editor',
-            plugins: "link linkchecker searchreplace pagebreak media image imagetools visualblocks preview fullscreen tinymcespellchecker emoticons table lists advlist help autosave save",
-            toolbar: "cut copy paste | undo redo | link pagebreak image | styleselect forecolor backcolor | bold italic underline strikethrough subscript superscript | alignleft aligncenter alignright alignjustify | table bullist numlist outdent indent | help restoredraft save",
+            plugins: "link linkchecker searchreplace media image imagetools visualblocks preview fullscreen tinymcespellchecker emoticons table lists advlist help autosave save",
+            toolbar: "cut copy paste | undo redo | link image | styleselect forecolor backcolor | bold italic underline strikethrough subscript superscript | alignleft aligncenter alignright alignjustify | table bullist numlist outdent indent | help restoredraft save",
             spellchecker_language: "pt_PT"
          });
       </script>
