@@ -8,10 +8,9 @@
       <link rel="stylesheet" href="css/style.css">
       <link rel="stylesheet" href="css/noticias.css">
 
-      <script src="node_modules/jquery/dist/jquery.js"></script>
-      <script src="node_modules/cropperjs/dist/cropper.js"></script>
-      <link href="node_modules/cropperjs/dist/cropper.css" rel="stylesheet">
-      <script src="node_modules/jquery-cropper/dist/jquery-cropper.js"></script>
+      <script src="node_modules/jquery/dist/jquery.js"></script><!-- jQuery is required -->
+      <link  href="node_modules/cropper/dist/cropper.css" rel="stylesheet">
+      <script src="node_modules/cropper/dist/cropper.js"></script>
 
       <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=75m26byuv004g3ef1g0nt44veoaej2ja385dzy5fynrjt9jm"></script>
    </head>
@@ -79,7 +78,7 @@
          <div class="div-menu">
             <button type="button" name="NovaNoticia">Nova Notícia</button>
          </div>
-         <form action="backend/sendNews.php" method="post">
+         <form class="newsForm" name="form" action="backend/sendNews.php" method="post">
             <p>Titulo Português:<br>
                <input type="text" name="tituloPT">
             </p>
@@ -88,7 +87,7 @@
             </p>
             <p>Imagem Cabeçalho:<br>
                <label class="form-filebutton">Carregar Imagem
-                  <input type="file" id="imagem" name="imagem" accept="image/png, image/jpeg, image/JPEG, image/jpeg2000, image/jpg">
+                  <input type="file" id="imagem" name="imagem" accept="image/png, image/jpeg, image/JPEG, image/jpeg2000, image/jpg, image/gif">
                </label>
             </p>
             <p>Notícia Português:<br>
@@ -97,92 +96,47 @@
             <p>Notícia Inglês:<br>
                <textarea id="editor2" name="editorEN"></textarea>
             </p>
+            <input type="submit" name="submit" value="Enviar">
          </form>
-         <div class="div-preview hidden">
-            <img class="img-preview" id="img-preview">
-            <div class="div-buttons">
-               <div class="div-buttons-group">
-                  <button class="btn-selected" type="button" id="btn-move"><img class="img-button" src="img/arrows.png"></button>
-                  <button type="button" id="btn-crop"><img class="img-button" src="img/crop.png"></button>
-               </div>
-               <div class="div-buttons-group">
-                  <button type="button" id="btn-rotLft"><img class="img-button" src="img/rotate-left.png"></button>
-                  <button type="button" id="btn-rotRht"><img class="img-button" src="img/rotate-right.png"></button>
-               </div>
-               <div class="div-buttons-group">
-                  <button type="button" id="btn-zoomIn"><img class="img-button" src="img/zoom-in.png"></button>
-                  <button type="button" id="btn-zoomOut"><img class="img-button" src="img/zoom-out.png"></button>
-               </div>
-               <div class="div-buttons-group">
-                  <button type="button" id="btn-reset"><img class="img-button" src="img/reset.png"></button>
-               </div>
-            </div>
-            <div class="div-buttons">
-               <button class="btn-send" type="button" id="btn-submit">Enviar</button>
-            </div>
-         </div>
       </main>
       <?php } ?>
 
       <script>
-      $(function() {
-         var image = $("#img-preview");
-         $("input:file").change(function() {
-            $(".div-preview").removeClass("hidden");
+         $(".newsForm").submit(function(e) {
+            e.preventDefault();
 
-            var oFReader = new FileReader();
-
-            oFReader.readAsDataURL(this.files[0]);
-            oFReader.onload = function (oFREvent) {
-               image.cropper("destroy");
-               image.attr("src", this.result);
-               image.cropper({
-                  aspectRatio: 1 / 1,
-                  viewMode: 1,
-                  toggleDragModeOnDblclick: false,
-                  dragMode: "move",
-                  crop: function(e) {}
+            var reader = new FileReader();
+            var ficheiro = document.querySelector('input[type=file]').files[0];
+            reader.readAsDataURL(ficheiro);
+            reader.onloadend = function () {
+               $.ajax({
+                  type: "POST",
+                  url: "backend/sendNews.php",
+                  data: {
+                     tituloPT: form.tituloPT.value,
+                     tituloEN: form.tituloEN.value,
+                     imagem: reader.result.replace(/^data:image\/(png|jpg);base64,/, ""),
+                     editorPT: form.editorPT.value,
+                     editorEN: form.editorEN.value
+                  },
+                  success: function(output) {
+                     if (output == "Error") {
+                        $(".p-error").removeClass("hidden");
+                     } else if (output == "Login") {
+                        $(".p-error").addClass("hidden");
+                        location.href = "index.php";
+                     } else {
+                        console.log(output);
+                     }
+                  }
                });
-            };
+            }
          });
-
-         $("#btn-move").click(function() {
-            $("#btn-crop").removeClass("btn-selected");
-            $("#btn-move").addClass("btn-selected");
-            $("#img-preview").cropper("setDragMode", "move");
-         })
-
-         $("#btn-crop").click(function() {
-            $("#btn-move").removeClass("btn-selected");
-            $("#btn-crop").addClass("btn-selected");
-            $("#img-preview").cropper("setDragMode", "crop");
-         })
-
-         $("#btn-rotLft").click(function() {
-            $("#img-preview").cropper("rotate", -5);
-         })
-
-         $("#btn-rotRht").click(function() {
-            $("#img-preview").cropper("rotate", 5);
-         })
-
-         $("#btn-zoomIn").click(function() {
-            $("#img-preview").cropper("zoom", 0.1);
-         })
-
-         $("#btn-zoomOut").click(function() {
-            $("#img-preview").cropper("zoom", -0.1);
-         })
-
-         $("#btn-reset").click(function() {
-            $("#img-preview").cropper("reset");
-         })
-      });
 
          tinymce.init({
             selector: '#editor1, #editor2',
-            plugins: "link linkchecker searchreplace visualblocks preview fullscreen tinymcespellchecker emoticons table lists advlist help autosave save wordcount",
-            toolbar: "cut copy paste | undo redo | styleselect forecolor backcolor | bold italic underline strikethrough subscript superscript link | alignleft aligncenter alignright alignjustify | table bullist numlist outdent indent | help restoredraft save",
+            plugins: "link linkchecker searchreplace visualblocks preview fullscreen tinymcespellchecker emoticons table lists advlist help autosave wordcount",
+            toolbar: "cut copy paste | undo redo | styleselect forecolor backcolor | bold italic underline strikethrough subscript superscript link | alignleft aligncenter alignright alignjustify | table bullist numlist outdent indent | help restoredraft",
             spellchecker_language: "pt_PT",
             default_link_target: "_blank"
          });

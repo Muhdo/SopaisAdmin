@@ -42,26 +42,9 @@ form input[type="text"], form input[type="password"] {
 }
 
 form input[type="submit"] {
-   height: 30px;
-   width: calc(100% - 20px);
-   background-color: #67CB57;
-   border: 0px;
-   border-radius: 5px;
    position: absolute;
    bottom: 10px;
    left: 10px;
-   font-size: 14px;
-   color: #FFFFFF;
-   transition: all 0.5s ease;
-   -moz-transition: all 0.5s ease;
-   -webkit-transition: all 0.5s ease;
-}
-
-form input[type="submit"]:focus, form input[type="submit"]:hover {
-   background-color: #4F9844;
-   transition: all 0.5s ease;
-   -moz-transition: all 0.5s ease;
-   -webkit-transition: all 0.5s ease;
 }
 
 .hidden {

@@ -105,6 +105,6 @@
       return $rand;
    }
 
-$connection = null;
-exit();
+   $connection = null;
+   exit();
 ?>

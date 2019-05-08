@@ -24,7 +24,7 @@
          <p>Password:</p>
          <input type="password" name="password">
          <p class="p-error hidden">Utilizador ou Password Incorreto</p>
-         <input type="submit" name="submt" value="Enviar">
+         <input type="submit" name="submit" value="Enviar">
       </form>
       <script>
       $(".div-form").submit(function(e) {
