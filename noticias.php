@@ -80,21 +80,22 @@
          </div>
          <form class="newsForm" name="form" action="backend/sendNews.php" method="post">
             <p>Titulo Português:<br>
-               <input type="text" name="tituloPT">
+               <input type="text" name="tituloPT" id="tituloPT">
             </p>
             <p>Titulo Inglês:<br>
-               <input type="text" name="tituloEN">
+               <input type="text" name="tituloEN" id="tituloEN">
             </p>
             <p>Imagem Cabeçalho:<br>
                <label class="form-filebutton">Carregar Imagem
-                  <input type="file" id="imagem" name="imagem" accept="image/png, image/jpeg, image/JPEG, image/jpeg2000, image/jpg, image/gif">
+                  <input type="file" id="inputimagem" name="imagem" accept="image/png, image/jpeg, image/JPEG, image/jpeg2000, image/jpg, image/gif">
                </label>
             </p>
+            <canvas id="canvas"></canvas>
             <p>Notícia Português:<br>
-               <textarea id="editor1" name="editorPT"></textarea>
+               <textarea id="editor1" name="editorPT" id="editorPT"></textarea>
             </p>
             <p>Notícia Inglês:<br>
-               <textarea id="editor2" name="editorEN"></textarea>
+               <textarea id="editor2" name="editorEN" id="editorEN"></textarea>
             </p>
             <input type="submit" name="submit" value="Enviar">
          </form>
@@ -102,35 +103,230 @@
       <?php } ?>
 
       <script>
+         function StyleErro(input) {
+            document.getElementById(input).classList.add("erro");
+         }
+
+         function StyleValid(input) {
+            document.getElementById(input).classList.remove("erro");
+         }
+
+         function readURL(input) {
+            if (input.files && input.files[0]) {
+               var reader = new FileReader();
+
+               reader.onload = function (e) {
+                  var blobURL = window.URL.createObjectURL(new Blob([e.target.result]));
+                  var image = new Image();
+                  image.src = blobURL;
+                  var c = document.getElementById("canvas");
+                  var ctx = c.getContext("2d");
+                  ctx.drawImage(image, 0, 0, image.width, image.height);
+               }
+
+               reader.readAsDataURL(input.files[0]);
+            }
+         }
+
+         $("#inputimagem").change(function() {
+            readURL(this);
+         });
+
+         var Timer;
+         var Intervalo = 500;
+
+         $("#tituloPT").on("blur", function() {
+            $.ajax({
+               type: "POST",
+               url: "backend/validations/titulo.php",
+               data: {
+                  titulo: $("#tituloPT").val(),
+                  lang: "PT"
+               },
+               success: function(output) {
+                  if (output == "Erro") {
+                     StyleErro("tituloPT");
+                  } else if (output == "Valido") {
+                     StyleValid("tituloPT");
+                  }
+               }
+            });
+         });
+         $("#tituloPT").on("keyup", function() {
+            clearTimeout(Timer);
+            Timer = setTimeout(function() {
+               $.ajax({
+                  type: "POST",
+                  url: "backend/validations/titulo.php",
+                  data: {
+                     titulo: $("#tituloPT").val(),
+                     lang: "PT"
+                  },
+                  success: function(output) {
+                     if (output == "Erro") {
+                        StyleErro("tituloPT");
+                     } else if (output == "Valido") {
+                        StyleValid("tituloPT");
+                     }
+                  }
+               });
+            }, Intervalo);
+         });
+         $("#tituloPT").on("keydown", function() {
+            clearTimeout(Timer);
+         });
+
+         $("#tituloEN").on("blur", function() {
+            $.ajax({
+               type: "POST",
+               url: "backend/validations/titulo.php",
+               data: {
+                  titulo: $("#tituloEN").val(),
+                  lang: "EN"
+               },
+               success: function(output) {
+                  if (output == "Erro") {
+                     StyleErro("tituloEN");
+                  } else if (output == "Valido") {
+                     StyleValid("tituloEN");
+                  }
+               }
+            });
+         });
+         $("#tituloEN").on("keyup", function() {
+            clearTimeout(Timer);
+            Timer = setTimeout(function() {
+               $.ajax({
+                  type: "POST",
+                  url: "backend/validations/titulo.php",
+                  data: {
+                     titulo: $("#tituloEN").val(),
+                     lang: "EN"
+                  },
+                  success: function(output) {
+                     if (output == "Erro") {
+                        StyleErro("tituloEN");
+                     } else if (output == "Valido") {
+                        StyleValid("tituloEN");
+                     }
+                  }
+               });
+            }, Intervalo);
+         });
+         $("#tituloEN").on("keydown", function() {
+            clearTimeout(Timer);
+         });
+
+         $("#editorPT").on("blur", function() {
+            $.ajax({
+               type: "POST",
+               url: "backend/validations/conteudo.php",
+               data: {
+                  editor: $("#editorPT").val()
+               },
+               success: function(output) {
+                  if (output == "Erro") {
+                     StyleErro("editorPT");
+                  } else if (output == "Valido") {
+                     StyleValid("editorPT");
+                  }
+               }
+            });
+         });
+         $("#editorPT").on("keyup", function() {
+            clearTimeout(Timer);
+            Timer = setTimeout(function() {
+               $.ajax({
+                  type: "POST",
+                  url: "backend/validations/conteudo.php",
+                  data: {
+                     editor: $("#editorPT").val()
+                  },
+                  success: function(output) {
+                     if (output == "Erro") {
+                        StyleErro("editorPT");
+                     } else if (output == "Valido") {
+                        StyleValid("editorPT");
+                     }
+                  }
+               });
+            }, Intervalo);
+         });
+         $("#editorPT").on("keydown", function() {
+            clearTimeout(Timer);
+         });
+
+         $("#editorEN").on("blur", function() {
+            $.ajax({
+               type: "POST",
+               url: "backend/validations/conteudo.php",
+               data: {
+                  editor: $("#editorEN").val()
+               },
+               success: function(output) {
+                  if (output == "Erro") {
+                     StyleErro("editorEN");
+                  } else if (output == "Valido") {
+                     StyleValid("editorEN");
+                  }
+               }
+            });
+         });
+         $("#editorEN").on("keyup", function() {
+            clearTimeout(Timer);
+            Timer = setTimeout(function() {
+               $.ajax({
+                  type: "POST",
+                  url: "backend/validations/conteudo.php",
+                  data: {
+                     editor: $("#editorEN").val()
+                  },
+                  success: function(output) {
+                     if (output == "Erro") {
+                        StyleErro("editorEN");
+                     } else if (output == "Valido") {
+                        StyleValid("editorEN");
+                     }
+                  }
+               });
+            }, Intervalo);
+         });
+         $("#editorEN").on("keydown", function() {
+            clearTimeout(Timer);
+         });
+
          $(".newsForm").submit(function(e) {
             e.preventDefault();
+            var canvas = document.getElementById('canvas');
+            var dataURL = canvas.toDataURL('image/png', 1.0);;
 
-            var reader = new FileReader();
-            var ficheiro = document.querySelector('input[type=file]').files[0];
-            reader.readAsDataURL(ficheiro);
-            reader.onloadend = function () {
                $.ajax({
                   type: "POST",
                   url: "backend/sendNews.php",
                   data: {
                      tituloPT: form.tituloPT.value,
                      tituloEN: form.tituloEN.value,
-                     imagem: reader.result.replace(/^data:image\/(png|jpg);base64,/, ""),
+                     imagem: dataURL,
                      editorPT: form.editorPT.value,
                      editorEN: form.editorEN.value
                   },
                   success: function(output) {
-                     if (output == "Error") {
-                        $(".p-error").removeClass("hidden");
-                     } else if (output == "Login") {
-                        $(".p-error").addClass("hidden");
-                        location.href = "index.php";
+                     console.log(output);
+                     if (output == "ErroTituloPT") {
+                        StyleErro("tituloPT");
+                     } else if (output == "ErroTituloEN") {
+                        StyleValid("tituloEN");
+                     } else if (output == "ErroConteudoPT") {
+                        StyleValid("editorPT");
+                     } else if (output == "ErroConteudoEN") {
+                        StyleValid("editorEN");
+                     } else if (output == "Valid") {
+                        window.href = "/noticias.php";
                      } else {
                         console.log(output);
                      }
                   }
                });
-            }
          });
 
          tinymce.init({

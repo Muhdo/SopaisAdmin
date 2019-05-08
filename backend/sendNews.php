@@ -4,11 +4,11 @@
    $key = "";
    $a = -1;
 
-   $tituloPT = $_POST["tituloPT"];
-   $tituloEN = $_POST["tituloEN"];
-   $imagem = $_POST["imagem"];
-   $editorPT = $_POST["editorPT"];
-   $editorEN = $_POST["editorEN"];
+   $tituloPT = utf8_decode($_POST["tituloPT"]);
+   $tituloEN = utf8_decode($_POST["tituloEN"]);
+   $imagem = file_get_contents($_POST["imagem"]);
+   $editorPT = utf8_decode($_POST["editorPT"]);
+   $editorEN = utf8_decode($_POST["editorEN"]);
 
    if ($_POST) {
       $queryValidarTituloPT = $connection->prepare("SELECT * FROM Noticia WHERE TituloPT = :TituloPT");
@@ -16,15 +16,15 @@
       $queryValidarTituloPT->bindParam(":TituloPT", $tituloPT, PDO::PARAM_STR);
       $queryValidarTituloPT->execute();
 
-      if ($queryValidarTituloPT->rowCount() >= 1) {
+      if ($queryValidarTituloPT->rowCount() >= 1 || strlen($tituloPT) <= 5) {
          echo "ErroTituloPT";
       } else {
-         $queryValidarTituloEN = $connection->prepare("SELECT * FROM Noticia WHERE tituloEN = :tituloEN");
+         $queryValidarTituloEN = $connection->prepare("SELECT * FROM Noticia WHERE TituloEN = :TituloEN");
 
-         $queryValidarTituloEN->bindParam(":tituloEN", $tituloEN, PDO::PARAM_STR);
+         $queryValidarTituloEN->bindParam(":TituloEN", $tituloEN, PDO::PARAM_STR);
          $queryValidarTituloEN->execute();
 
-         if ($queryValidarTituloEN->rowCount() >= 1) {
+         if ($queryValidarTituloEN->rowCount() >= 1 || strlen($tituloEN) <= 5) {
             echo "ErroTituloEN";
          } else {
             if (strlen($editorPT) < 60) {
@@ -52,10 +52,11 @@
 
                   $queryInserirNoticia->bindParam(":Key_Noticia", $key, PDO::PARAM_STR);
                   $queryInserirNoticia->bindParam(":TituloPT", $tituloPT, PDO::PARAM_STR);
-                  $queryInserirNoticia->bindParam(":TituloEN", $TituloEN, PDO::PARAM_STR);
-                  $queryInserirNoticia->bindParam(":Imagem", $Imagem, PDO::PARAM_STR);
-                  $queryInserirNoticia->bindParam(":ConteudoPT", $ConteudoPT, PDO::PARAM_STR);
-                  $queryInserirNoticia->bindParam(":ConteudoEN", $ConteudoEN, PDO::PARAM_STR);
+                  $queryInserirNoticia->bindParam(":TituloEN", $tituloEN, PDO::PARAM_STR);
+                  $queryInserirNoticia->bindParam(":Imagem", $imagem, PDO::PARAM_STR);
+                  $queryInserirNoticia->bindParam(":ConteudoPT", $editorPT, PDO::PARAM_STR);
+                  $queryInserirNoticia->bindParam(":ConteudoEN", $editorEN, PDO::PARAM_STR);
+
                   $queryInserirNoticia->execute();
                }
             }

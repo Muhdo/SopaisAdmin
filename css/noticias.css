@@ -185,6 +185,11 @@ form p {
    transition: background-color 0.3s;
 }
 
+.erro {
+   box-shadow: inset 2px 2px #FF0000, inset -2px -2px #FF0000, inset 2px -2px #FF0000, inset -2px 2px #FF0000;
+   border-radius: 0.2em;
+}
+
 .tox-checklist > li:not(.tox-checklist--hidden) {
   list-style: none;
   margin: .25em 0;
