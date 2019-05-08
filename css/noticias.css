@@ -134,14 +134,46 @@ input[type="file"] {
 	transition: background-color 0.3s;
 }
 
-/* EDITOR DE TEXTO */
-
 form {
    margin-bottom: 50px;
 }
 
-#editor {
+#editor1, #editor2 {
    height: 500px;
+}
+
+.hidden {
+   display: none;
+}
+
+.div-preview {
+   margin-top: 5px;
+}
+
+.img-preview {
+   max-width: 100%;
+}
+
+.img-button {
+   height: 25px;
+}
+
+.div-buttons {
+   display:flex;
+   flex-direction: row;
+   width: 100%;
+   justify-content: space-around;
+}
+
+.div-buttons-group {
+   display:flex;
+   flex-direction: row;
+   margin: 5px;
+}
+
+.btn-selected {
+   background-color: #00AEFF;
+   transition: background-color 0.3s;
 }
 
 .tox-checklist > li:not(.tox-checklist--hidden) {
