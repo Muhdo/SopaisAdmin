@@ -8,11 +8,10 @@
       <link rel="stylesheet" href="css/style.css">
       <link rel="stylesheet" href="css/noticias.css">
 
-      <script src="node_modules/jquery/dist/jquery.js"></script><!-- jQuery is required -->
-      <link  href="node_modules/cropper/dist/cropper.css" rel="stylesheet">
-      <script src="node_modules/cropper/dist/cropper.js"></script>
-
       <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=75m26byuv004g3ef1g0nt44veoaej2ja385dzy5fynrjt9jm"></script>
+
+      <script src="node_modules/jquery/dist/jquery.js"></script><!-- jQuery is required -->
+      <link  href="node_modules/cropperjs/dist/cropper.css" rel="stylesheet">
    </head>
    <body>
       <?php
@@ -76,7 +75,7 @@
             ?>
          </nav>
          <div class="div-menu">
-            <button type="button" name="NovaNoticia">Nova Notícia</button>
+            <button type="button" name="NovaNoticia" onclick="novaNoticia();">Nova Notícia</button>
          </div>
          <form class="newsForm" name="form" action="backend/sendNews.php" method="post">
             <p>Titulo Português:<br>
@@ -86,51 +85,179 @@
                <input type="text" name="tituloEN" id="tituloEN">
             </p>
             <p>Imagem Cabeçalho:<br>
-               <label class="form-filebutton">Carregar Imagem
-                  <input type="file" id="inputimagem" name="imagem" accept="image/png, image/jpeg, image/JPEG, image/jpeg2000, image/jpg, image/gif">
+               <label class="form-filebutton" id="filebutton">Carregar Imagem
+                  <input type="file" id="imagem" name="Imagem" accept="image/*">
                </label>
+               <div class="div-preview hidden">
+                  <img class="img-preview" id="img-preview">
+                  <div class="div-buttons">
+                     <div class="div-buttons-group">
+                        <button class="btn-selected" type="button" id="btn-move"><img class="img-button" src="img/arrows.png"></button>
+                        <button type="button" id="btn-crop"><img class="img-button" src="img/crop.png"></button>
+                     </div>
+                     <div class="div-buttons-group">
+                        <button type="button" id="btn-rotLft"><img class="img-button" src="img/rotate-left.png"></button>
+                        <button type="button" id="btn-rotRht"><img class="img-button" src="img/rotate-right.png"></button>
+                     </div>
+                     <div class="div-buttons-group">
+                        <button type="button" id="btn-zoomIn"><img class="img-button" src="img/zoom-in.png"></button>
+                        <button type="button" id="btn-zoomOut"><img class="img-button" src="img/zoom-out.png"></button>
+                     </div>
+                     <div class="div-buttons-group">
+                        <button type="button" id="btn-reset"><img class="img-button" src="img/reset.png"></button>
+                     </div>
+                  </div>
+               </div>
             </p>
             <canvas id="canvas"></canvas>
             <p>Notícia Português:<br>
-               <textarea id="editor1" name="editorPT" id="editorPT"></textarea>
+               <textarea id="editor1" name="editorPT"></textarea>
             </p>
             <p>Notícia Inglês:<br>
-               <textarea id="editor2" name="editorEN" id="editorEN"></textarea>
+               <textarea id="editor2" name="editorEN"></textarea>
             </p>
             <input type="submit" name="submit" value="Enviar">
          </form>
+         <button class="btn-delete" type="button" onclick="abrirApagar();">Apagar</button>
       </main>
       <?php } ?>
 
+      <script src="node_modules/cropperjs/dist/cropper.js"></script>
+      <script src="node_modules/jquery-cropper/dist/jquery-cropper.js"></script>
       <script>
-         function StyleErro(input) {
-            document.getElementById(input).classList.add("erro");
-         }
+         function abrirApagar() {
+            if (butao != "Guardar") {
+               var popup = prompt("Tem a certeza que quer apagar a noticia \"" + $("#tituloPT").val() + "\"? \n Escreva o nome da noticia para apagar!");
 
-         function StyleValid(input) {
-            document.getElementById(input).classList.remove("erro");
-         }
-
-         function readURL(input) {
-            if (input.files && input.files[0]) {
-               var reader = new FileReader();
-
-               reader.onload = function (e) {
-                  var blobURL = window.URL.createObjectURL(new Blob([e.target.result]));
-                  var image = new Image();
-                  image.src = blobURL;
-                  var c = document.getElementById("canvas");
-                  var ctx = c.getContext("2d");
-                  ctx.drawImage(image, 0, 0, image.width, image.height);
+               if (popup == $("#tituloPT").val()) {
+                  $.ajax({
+                     type: "POST",
+                     url: "backend/deleteNews.php",
+                     data: {
+                        key: butao
+                     },
+                     success: function(output) {
+                        if (output == "Deleted") {
+                           location.reload();
+                        }
+                     }
+                  });
+               } else if (popup === null) {
+                  alert("A notícia NÃO foi apagada!");
+               } else {
+                  alert("O titulo introduzido não corresponde!");
                }
-
-               reader.readAsDataURL(input.files[0]);
             }
          }
 
-         $("#inputimagem").change(function() {
-            readURL(this);
+         function novaNoticia() {
+            butao = "Guardar";
+            $("#tituloPT").val("");
+            $("#tituloEN").val("");
+
+            $(".div-preview").addClass("hidden");
+            $("#img-preview").cropper("destroy");
+            $("#img-preview").attr("src", "");
+            $(tinymce.get('editor1').getBody()).html("");
+            $(tinymce.get('editor2').getBody()).html("");
+         }
+
+         var butao = "Guardar";
+         var defaultimage = "";
+
+         $(document).on('click','.artigo',function(){
+               id = $(this).attr("id");
+               $.ajax({
+                  type: "POST",
+                  url: "backend/loadNews.php",
+                  data: { key: id },
+                  success: function(output) {
+                     output = JSON.parse(output)
+                     butao = output.keyNoticia;
+                     $("#tituloPT").val(output.tituloPT);
+                     $("#tituloEN").val(output.tituloEN);
+
+                     $(".div-preview").removeClass("hidden");
+                     $("#img-preview").cropper("destroy");
+                     $("#img-preview").attr("src", "data:image/jpeg;base64," + output.imagem);
+                     defaultimage = output.imagem;
+                     $("#img-preview").cropper({
+                        autoCropArea: 1,
+                        aspectRatio: 16 / 9,
+                        viewMode: 1,
+                        toggleDragModeOnDblclick: false,
+                        dragMode: "move",
+                        crop: function(e) {}
+                     });
+
+                     $(tinymce.get('editor1').getBody()).html(output.conteudoPT);
+                     $(tinymce.get('editor2').getBody()).html(output.conteudoEN);
+                  }
+               });
+            });
+
+         $(function() {
+            var image = $("#img-preview");
+            $("input:file").change(function() {
+               StyleValid("filebutton");
+               $(".div-preview").removeClass("hidden");
+
+               var oFReader = new FileReader();
+
+               oFReader.readAsDataURL(this.files[0]);
+               oFReader.onload = function (oFREvent) {
+                  image.cropper("destroy");
+                  image.attr("src", this.result);
+                  image.cropper({
+                     aspectRatio: 16 / 9,
+                     viewMode: 1,
+                     toggleDragModeOnDblclick: false,
+                     dragMode: "move",
+                     crop: function(e) {}
+                  });
+               };
+            });
+
+            $("#btn-move").click(function() {
+               $("#btn-crop").removeClass("btn-selected");
+               $("#btn-move").addClass("btn-selected");
+               $("#img-preview").cropper("setDragMode", "move");
+            })
+
+            $("#btn-crop").click(function() {
+               $("#btn-move").removeClass("btn-selected");
+               $("#btn-crop").addClass("btn-selected");
+               $("#img-preview").cropper("setDragMode", "crop");
+            })
+
+            $("#btn-rotLft").click(function() {
+               $("#img-preview").cropper("rotate", -5);
+            })
+
+            $("#btn-rotRht").click(function() {
+               $("#img-preview").cropper("rotate", 5);
+            })
+
+            $("#btn-zoomIn").click(function() {
+               $("#img-preview").cropper("zoom", 0.1);
+            })
+
+            $("#btn-zoomOut").click(function() {
+               $("#img-preview").cropper("zoom", -0.1);
+            })
+
+            $("#btn-reset").click(function() {
+               $("#img-preview").cropper("reset");
+            })
          });
+
+         function StyleErro(input) {
+            $("#" + input).addClass("erro");
+         }
+
+         function StyleValid(input) {
+            $("#" + input).removeClass("erro");
+         }
 
          var Timer;
          var Intervalo = 500;
@@ -226,9 +353,9 @@
                },
                success: function(output) {
                   if (output == "Erro") {
-                     StyleErro("editorPT");
+                     StyleErro("editor1");
                   } else if (output == "Valido") {
-                     StyleValid("editorPT");
+                     StyleValid("editor1");
                   }
                }
             });
@@ -244,9 +371,9 @@
                   },
                   success: function(output) {
                      if (output == "Erro") {
-                        StyleErro("editorPT");
+                        StyleErro("editor1");
                      } else if (output == "Valido") {
-                        StyleValid("editorPT");
+                        StyleValid("editor1");
                      }
                   }
                });
@@ -265,9 +392,9 @@
                },
                success: function(output) {
                   if (output == "Erro") {
-                     StyleErro("editorEN");
+                     StyleErro("editor2");
                   } else if (output == "Valido") {
-                     StyleValid("editorEN");
+                     StyleValid("editor2");
                   }
                }
             });
@@ -283,9 +410,9 @@
                   },
                   success: function(output) {
                      if (output == "Erro") {
-                        StyleErro("editorEN");
+                        StyleErro("editor2");
                      } else if (output == "Valido") {
-                        StyleValid("editorEN");
+                        StyleValid("editor2");
                      }
                   }
                });
@@ -297,8 +424,21 @@
 
          $(".newsForm").submit(function(e) {
             e.preventDefault();
-            var canvas = document.getElementById('canvas');
-            var dataURL = canvas.toDataURL('image/png', 1.0);;
+
+            try {
+               var imagem;
+               var image = $("#img-preview");
+               var dadosimagem = image.cropper("getImageData");
+               var dadoscrop = image.cropper("getCropBoxData");
+               if (butao != "Guardar") {
+                  if (dadosimagem.height == dadoscrop.height && dadosimagem.width == dadoscrop.width) {
+                     imagem = "NoImage";
+                  } else {
+                     imagem = $("#img-preview").cropper("getCroppedCanvas", {width: 1000}).toDataURL("image/jpeg", 1);
+                  }
+               }
+               console.log(dadosimagem);
+               console.log(dadoscrop);
 
                $.ajax({
                   type: "POST",
@@ -306,34 +446,45 @@
                   data: {
                      tituloPT: form.tituloPT.value,
                      tituloEN: form.tituloEN.value,
-                     imagem: dataURL,
-                     editorPT: form.editorPT.value,
-                     editorEN: form.editorEN.value
+                     imagem: imagem,
+                     editorPT: $(tinymce.get('editor1').getBody()).html(),
+                     editorEN: $(tinymce.get('editor2').getBody()).html(),
+                     func: butao
                   },
                   success: function(output) {
                      console.log(output);
                      if (output == "ErroTituloPT") {
                         StyleErro("tituloPT");
                      } else if (output == "ErroTituloEN") {
-                        StyleValid("tituloEN");
+                        StyleErro("tituloEN");
                      } else if (output == "ErroConteudoPT") {
-                        StyleValid("editorPT");
+                        StyleErro("editor1");
                      } else if (output == "ErroConteudoEN") {
-                        StyleValid("editorEN");
-                     } else if (output == "Valid") {
-                        window.href = "/noticias.php";
-                     } else {
-                        console.log(output);
+                        StyleErro("editor2");
+                     } else if (output == "Valid" || output == "Updated") {
+                        location.reload();
                      }
                   }
                });
+            } catch (e) {
+               console.log(e);
+               StyleErro("filebutton");
+            }
          });
 
          tinymce.init({
-            selector: '#editor1, #editor2',
+            selector: '#editor1',
             plugins: "link linkchecker searchreplace visualblocks preview fullscreen tinymcespellchecker emoticons table lists advlist help autosave wordcount",
             toolbar: "cut copy paste | undo redo | styleselect forecolor backcolor | bold italic underline strikethrough subscript superscript link | alignleft aligncenter alignright alignjustify | table bullist numlist outdent indent | help restoredraft",
             spellchecker_language: "pt_PT",
+            default_link_target: "_blank"
+         });
+
+         tinymce.init({
+            selector: '#editor2',
+            plugins: "link linkchecker searchreplace visualblocks preview fullscreen tinymcespellchecker emoticons table lists advlist help autosave wordcount",
+            toolbar: "cut copy paste | undo redo | styleselect forecolor backcolor | bold italic underline strikethrough subscript superscript link | alignleft aligncenter alignright alignjustify | table bullist numlist outdent indent | help restoredraft",
+            spellchecker_language: "en",
             default_link_target: "_blank"
          });
       </script>
