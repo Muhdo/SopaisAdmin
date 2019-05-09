@@ -88,6 +88,7 @@
                <label class="form-filebutton" id="filebutton">Carregar Imagem
                   <input type="file" id="imagem" name="Imagem" accept="image/*">
                </label>
+               <img class="img-preview hidden" id="img-view">
                <div class="div-preview hidden">
                   <img class="img-preview" id="img-preview">
                   <div class="div-buttons">
@@ -109,7 +110,6 @@
                   </div>
                </div>
             </p>
-            <canvas id="canvas"></canvas>
             <p>Notícia Português:<br>
                <textarea id="editor1" name="editorPT"></textarea>
             </p>
@@ -156,6 +156,8 @@
             $("#tituloEN").val("");
 
             $(".div-preview").addClass("hidden");
+            $("#img-view").addClass("hidden");
+            $("input:file").val("");
             $("#img-preview").cropper("destroy");
             $("#img-preview").attr("src", "");
             $(tinymce.get('editor1').getBody()).html("");
@@ -177,18 +179,11 @@
                      $("#tituloPT").val(output.tituloPT);
                      $("#tituloEN").val(output.tituloEN);
 
-                     $(".div-preview").removeClass("hidden");
+                     $(".div-preview").addClass("hidden");
+                     $("#img-view").removeClass("hidden");
+                     $("input:file").val("");
                      $("#img-preview").cropper("destroy");
-                     $("#img-preview").attr("src", "data:image/jpeg;base64," + output.imagem);
-                     defaultimage = output.imagem;
-                     $("#img-preview").cropper({
-                        autoCropArea: 1,
-                        aspectRatio: 16 / 9,
-                        viewMode: 1,
-                        toggleDragModeOnDblclick: false,
-                        dragMode: "move",
-                        crop: function(e) {}
-                     });
+                     $("#img-view").attr("src", "data:image/jpeg;base64," + output.imagem);
 
                      $(tinymce.get('editor1').getBody()).html(output.conteudoPT);
                      $(tinymce.get('editor2').getBody()).html(output.conteudoEN);
@@ -206,6 +201,7 @@
 
                oFReader.readAsDataURL(this.files[0]);
                oFReader.onload = function (oFREvent) {
+                  $("#img-view").addClass("hidden");
                   image.cropper("destroy");
                   image.attr("src", this.result);
                   image.cropper({
@@ -431,14 +427,12 @@
                var dadosimagem = image.cropper("getImageData");
                var dadoscrop = image.cropper("getCropBoxData");
                if (butao != "Guardar") {
-                  if (dadosimagem.height == dadoscrop.height && dadosimagem.width == dadoscrop.width) {
-                     imagem = "NoImage";
-                  } else {
+                  try {
                      imagem = $("#img-preview").cropper("getCroppedCanvas", {width: 1000}).toDataURL("image/jpeg", 1);
+                  } catch (e) {
+                     imagem = "NoImage";
                   }
                }
-               console.log(dadosimagem);
-               console.log(dadoscrop);
 
                $.ajax({
                   type: "POST",

@@ -6,7 +6,7 @@
 
    $tituloPT = utf8_decode($_POST["tituloPT"]);
    $tituloEN = utf8_decode($_POST["tituloEN"]);
-   $imagem = file_get_contents($_POST["imagem"]);
+   $imagem = $_POST["imagem"];
    $editorPT = utf8_decode($_POST["editorPT"]);
    $editorEN = utf8_decode($_POST["editorEN"]);
    $func = $_POST["func"];
@@ -118,6 +118,7 @@
                   $queryAtualizarNoticia->bindParam(":ConteudoPT", $editorPT, PDO::PARAM_STR);
                   $queryAtualizarNoticia->bindParam(":ConteudoEN", $editorEN, PDO::PARAM_STR);
                } else {
+                  $imagem = file_get_contents($imagem);
                   $queryAtualizarNoticia = $connection->prepare("UPDATE Noticia SET TituloPT = :TituloPT, TituloEN = :TituloEN, Imagem = :Imagem, ConteudoPT = :ConteudoPT, ConteudoEN = :ConteudoEN WHERE Key_Noticia = :Key_Noticia");
                   $queryAtualizarNoticia->bindParam(":Key_Noticia", $func, PDO::PARAM_STR);
                   $queryAtualizarNoticia->bindParam(":TituloPT", $tituloPT, PDO::PARAM_STR);
