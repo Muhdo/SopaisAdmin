@@ -10,7 +10,7 @@
 
       <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=75m26byuv004g3ef1g0nt44veoaej2ja385dzy5fynrjt9jm"></script>
 
-      <script src="node_modules/jquery/dist/jquery.js"></script><!-- jQuery is required -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
       <link  href="node_modules/cropperjs/dist/cropper.css" rel="stylesheet">
    </head>
    <body>
@@ -174,7 +174,7 @@
                   url: "backend/loadNews.php",
                   data: { key: id },
                   success: function(output) {
-                     output = JSON.parse(output)
+                     output = JSON.parse(output);
                      butao = output.keyNoticia;
                      $("#tituloPT").val(output.tituloPT);
                      $("#tituloEN").val(output.tituloEN);

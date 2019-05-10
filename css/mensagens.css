@@ -1,0 +1,73 @@
+table {
+   max-width: 100%;
+   width: 100%;
+}
+
+tr>th {
+   color: #FFFFFF;
+   background-color: #273B7B;
+}
+
+table, tr, tr>th {
+   border: solid 1px #000000;
+   border-collapse: collapse;
+}
+
+.responder {
+   font-size: 14px;
+   font-weight: bold;
+   background-color: #96A1C3;
+}
+
+.respondido {
+   font-size: 14px;
+   font-weight: lighter;
+   color: #555555;
+   background-color: #B9C0D5;
+}
+
+.div-menu {
+   margin: 10px;
+   display: flex;
+   justify-content: space-between;
+}
+
+.div-numeros > a {
+   margin: 0px 2px;
+   text-decoration: none;
+   color: #000000;
+}
+
+.img-arrow {
+   height: 14px;
+   width: auto;
+}
+
+.pageSelected {
+   font-weight: bold;
+}
+
+.div-campos {
+   width: 100%;
+   display: flex;
+   flex-direction: row;
+}
+
+.div-campos > h2 {
+   width: 100px;
+   text-align: right;
+}
+
+.div-campos > p {
+   height: auto;
+   margin: auto 10px;
+}
+
+.div-mensagem {
+   display: flex;
+   flex-direction: column;
+}
+
+.div-mensagem > p {
+   margin: 10px;
+}
