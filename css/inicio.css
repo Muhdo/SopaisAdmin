@@ -1,0 +1,17 @@
+.div-mensagem {
+   margin: 10px;
+}
+
+.div-campos {
+   display: flex;
+   flex-direction: row;
+}
+
+.div-campos h3, .div-campos p {
+   width: auto;
+   margin-top: auto;
+}
+
+.div-campos p {
+   margin-left: 10px;
+}

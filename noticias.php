@@ -165,7 +165,6 @@
          }
 
          var butao = "Guardar";
-         var defaultimage = "";
 
          $(document).on('click','.artigo',function(){
                id = $(this).attr("id");
@@ -206,7 +205,7 @@
                   image.attr("src", this.result);
                   image.cropper({
                      aspectRatio: 16 / 9,
-                     viewMode: 1,
+                     viewMode: 0,
                      toggleDragModeOnDblclick: false,
                      dragMode: "move",
                      crop: function(e) {}
@@ -421,49 +420,43 @@
          $(".newsForm").submit(function(e) {
             e.preventDefault();
 
-            try {
-               var imagem;
-               var image = $("#img-preview");
-               var dadosimagem = image.cropper("getImageData");
-               var dadoscrop = image.cropper("getCropBoxData");
-               if (butao != "Guardar") {
-                  try {
-                     imagem = $("#img-preview").cropper("getCroppedCanvas", {width: 1000}).toDataURL("image/jpeg", 1);
-                  } catch (e) {
-                     imagem = "NoImage";
+            var imagem;
+
+            if (butao != "Guardar") {
+               try {
+                  imagem = $("#img-preview").cropper("getCroppedCanvas", {fillColor: '#fff', width: 1000}).toDataURL("image/jpeg", 1);
+               } catch (e) {
+                  imagem = "NoImage";
+               }
+            } else if (butao == "Guardar" || butao == "") {
+               imagem = $("#img-preview").cropper("getCroppedCanvas", {fillColor: '#fff', width: 1000}).toDataURL("image/jpeg", 1);
+            }
+
+            $.ajax({
+               type: "POST",
+               url: "backend/sendNews.php",
+               data: {
+                  tituloPT: form.tituloPT.value,
+                  tituloEN: form.tituloEN.value,
+                  imagem: imagem,
+                  editorPT: $(tinymce.get('editor1').getBody()).html(),
+                  editorEN: $(tinymce.get('editor2').getBody()).html(),
+                  func: butao
+               },
+               success: function(output) {
+                  if (output == "ErroTituloPT") {
+                     StyleErro("tituloPT");
+                  } else if (output == "ErroTituloEN") {
+                     StyleErro("tituloEN");
+                  } else if (output == "ErroConteudoPT") {
+                     StyleErro("editor1");
+                  } else if (output == "ErroConteudoEN") {
+                     StyleErro("editor2");
+                  } else if (output == "Valid" || output == "Updated") {
+                     location.reload();
                   }
                }
-
-               $.ajax({
-                  type: "POST",
-                  url: "backend/sendNews.php",
-                  data: {
-                     tituloPT: form.tituloPT.value,
-                     tituloEN: form.tituloEN.value,
-                     imagem: imagem,
-                     editorPT: $(tinymce.get('editor1').getBody()).html(),
-                     editorEN: $(tinymce.get('editor2').getBody()).html(),
-                     func: butao
-                  },
-                  success: function(output) {
-                     console.log(output);
-                     if (output == "ErroTituloPT") {
-                        StyleErro("tituloPT");
-                     } else if (output == "ErroTituloEN") {
-                        StyleErro("tituloEN");
-                     } else if (output == "ErroConteudoPT") {
-                        StyleErro("editor1");
-                     } else if (output == "ErroConteudoEN") {
-                        StyleErro("editor2");
-                     } else if (output == "Valid" || output == "Updated") {
-                        location.reload();
-                     }
-                  }
-               });
-            } catch (e) {
-               console.log(e);
-               StyleErro("filebutton");
-            }
+            });
          });
 
          tinymce.init({

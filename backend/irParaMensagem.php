@@ -2,7 +2,6 @@
    include_once "database.php";
 
    $indice = $_POST["indice"];
-   $return = array();
 
    if (isset($_POST)) {
       $queryLoadMensagens = $connection->prepare("SELECT Key_Mensagem, Nome, Email, Data, Respondido FROM Mensagem ORDER BY Respondido, Data DESC LIMIT ".($indice + 1).",30");

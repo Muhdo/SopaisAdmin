@@ -5,7 +5,7 @@ table {
 
 tr>th {
    color: #FFFFFF;
-   background-color: #273B7B;
+   background-color: #535353;
 }
 
 table, tr, tr>th {
@@ -16,14 +16,14 @@ table, tr, tr>th {
 .responder {
    font-size: 14px;
    font-weight: bold;
-   background-color: #96A1C3;
+   background-color: #B5B6B9;
 }
 
 .respondido {
    font-size: 14px;
    font-weight: lighter;
    color: #555555;
-   background-color: #B9C0D5;
+   background-color: #A3A3A3;
 }
 
 .div-menu {
@@ -54,11 +54,11 @@ table, tr, tr>th {
 }
 
 .div-campos > h2 {
-   width: 100px;
+   width: 142px;
    text-align: right;
 }
 
-.div-campos > p {
+.div-campos > p, .div-campos > a {
    height: auto;
    margin: auto 10px;
 }
@@ -70,4 +70,8 @@ table, tr, tr>th {
 
 .div-mensagem > p {
    margin: 10px;
+}
+
+.div_campos, .div-mensagem {
+   margin-left: 10px;
 }

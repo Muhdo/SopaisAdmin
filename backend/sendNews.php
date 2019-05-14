@@ -41,7 +41,7 @@
                   } else {
                      do {
                         $a += 1;
-                        $key = KeyGenerator(16);
+                        $key = KeyGenerator(4);
 
                         $queryProcurarkey = $connection->prepare("SELECT * FROM Noticia WHERE Key_Noticia = :Key");
                         $queryProcurarkey->bindParam(":Key", $key, PDO::PARAM_STR);
@@ -56,6 +56,7 @@
 
                      $queryInserirNoticia = $connection->prepare("INSERT INTO Noticia(Key_Noticia, TituloPT, TituloEN, Imagem, ConteudoPT, ConteudoEN) VALUES (:Key_Noticia, :TituloPT, :TituloEN, :Imagem, :ConteudoPT, :ConteudoEN)");
 
+                     $imagem = file_get_contents($imagem);
                      $queryInserirNoticia->bindParam(":Key_Noticia", $key, PDO::PARAM_STR);
                      $queryInserirNoticia->bindParam(":TituloPT", $tituloPT, PDO::PARAM_STR);
                      $queryInserirNoticia->bindParam(":TituloEN", $tituloEN, PDO::PARAM_STR);
@@ -79,10 +80,16 @@
          $queryValidarTituloPT->bindParam(":TituloPT", $tituloPT, PDO::PARAM_STR);
          $queryValidarTituloPT->execute();
 
-         if ($queryValidarTituloPT->rowCount() >= 1 || strlen($tituloPT) <= 5) {
+         if ($queryValidarTituloPT->rowCount() >= 1) {
             $resultado = $queryValidarTituloPT->fetchAll();
 
             if ($resultado[0]["Key_Noticia"] !== $func) {
+               echo "DuplicadoTituloPT";
+               exit();
+            }
+
+
+            if (strlen($tituloPT) <= 5) {
                echo "ErroTituloPT";
                exit();
             }
@@ -93,10 +100,15 @@
          $queryValidarTituloEN->bindParam(":TituloEN", $tituloEN, PDO::PARAM_STR);
          $queryValidarTituloEN->execute();
 
-         if ($queryValidarTituloEN->rowCount() >= 1 || strlen($tituloEN) <= 5) {
+         if ($queryValidarTituloEN->rowCount() >= 1) {
             $resultado = $queryValidarTituloEN->fetchAll();
 
             if ($resultado[0]["Key_Noticia"] != $func) {
+               echo "DuplicadoTituloEN";
+               exit();
+            }
+
+            if (strlen($tituloEN) <= 5) {
                echo "ErroTituloEN";
                exit();
             }
@@ -127,10 +139,13 @@
                   $queryAtualizarNoticia->bindParam(":ConteudoPT", $editorPT, PDO::PARAM_STR);
                   $queryAtualizarNoticia->bindParam(":ConteudoEN", $editorEN, PDO::PARAM_STR);
 
-                  $queryAtualizarNoticia->execute();
                }
 
-               echo "Updated";
+               if ($queryAtualizarNoticia->execute()) {
+                  echo "Updated";
+               } else {
+                  echo "ErroUpdate";
+               }
                exit();
             }
          }

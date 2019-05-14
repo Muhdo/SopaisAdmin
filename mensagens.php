@@ -102,7 +102,7 @@
             </div>
             <div class="div-campos">
                <h2>Email:</h2>
-               <p id="Email"></p>
+               <a href="" target="_blank" id="Email"></a>
             </div>
             <div class="div-campos">
                <h2>Data:</h2>
@@ -120,32 +120,54 @@
       <?php } ?>
       <script>
          $(document).on('click','tr',function(){
-            var id = $(this).attr("id");
-            if (id != "heading") {
+            var key = $(this).attr("id");
+            if (key != "heading") {
                $.ajax({
                   type: "POST",
                   url: "backend/carregarInfoMensagem.php",
                   data: {
-                     key: id
+                     key: key
                   },
                   success: function(output) {
                      output = JSON.parse(output);
                      $("#Nome").html(output.Nome);
                      $("#Email").html(output.Email);
+                     $("#Email").attr("href", "mailto:" + output.Email + "?Subject=Resposta%20%C3%A0%20mensagem%20na%20Sopais")
                      $("#Data").html(output.Data);
                      $("#Mensagem").html(output.Mensagem);
 
                      $(".div-butao button").remove();
 
                      if (output.Respondido == 0) {
-                        $('.div-butao').append('<button type="button" name="button" onClick="">Marcar como respondido</button>');
+                        $('.div-butao').append('<button type="button" name="btn-estado" onClick="mudarEstado(\'' + key + '\', 1);">Marcar como respondido</button>');
                      } else {
-                        $('.div-butao').append('<button type="button" name="button" onClick="">Marcar como respondido</button>');
+                        $('.div-butao').append('<button type="button" name="btn-estado" onClick="mudarEstado(\'' + key + '\', 0);">Marcar como por responder</button>');
                      }
                   }
                });
             }
          });
+
+         function mudarEstado(chave, estado) {
+            $.ajax({
+               type: "POST",
+               url: "backend/mudarEstadoMensagem.php",
+               data: {
+                  KeyMensagem: chave,
+                  estado: estado
+               },
+               success: function(output) {
+                  $(".div-butao button").remove();
+                  if (estado == 0) {
+                     $('.div-butao').append('<button type="button" name="btn-estado" onClick="mudarEstado(\'' + chave + '\', 1);">Marcar como respondido</button>');
+                     $("#" + chave).removeClass("respondido").addClass("responder");
+                  } else if (estado == 1) {
+                     $("#" + chave).removeClass("responder").addClass("respondido");
+                     $('.div-butao').append('<button type="button" name="btn-estado" onClick="mudarEstado(\'' + chave + '\', 0);">Marcar como por responder</button>');
+                  }
+               }
+            });
+         }
 
          function irPara(pagina) {
             var indice = 30 * (pagina - 1);

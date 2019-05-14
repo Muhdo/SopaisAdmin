@@ -5,7 +5,7 @@
 
 main {
    height: 100vh;
-   width: calc(100% - 253px);
+   width: calc(100% - 252px);
    position: absolute;
    top: 0;
    right: 0;
@@ -44,4 +44,8 @@ button {
    transition: all 0.5s ease;
    -moz-transition: all 0.5s ease;
    -webkit-transition: all 0.5s ease;
+}
+
+progress {
+   width: 100%;
 }
