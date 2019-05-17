@@ -11,10 +11,10 @@
       <?php
          session_start();
          if (isset($_SESSION["User_Id"])) {
-            header("Location: inicio.php");
+            echo "<script type='text/javascript'>window.top.location='inicio.php';</script>";
          }
          else {
-            header("Location: login.php");
+            echo "<script type='text/javascript'>window.top.location='login.php';</script>";
          }
       ?>
    </body>

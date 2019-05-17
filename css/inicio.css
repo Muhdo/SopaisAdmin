@@ -1,8 +1,13 @@
 .div-mensagem {
-   margin: 10px;
+   width: calc(100% - 30px);
+   margin: 0px 15px;
+   position: absolute;
+   top: 50%;
+   transform: translateY(-50%);
 }
 
 .div-campos {
+   margin: 15px 0px;
    display: flex;
    flex-direction: row;
 }
@@ -14,4 +19,10 @@
 
 .div-campos p {
    margin-left: 10px;
+}
+
+.div-btn-cont {
+   position: absolute;
+   right: 15px;
+   bottom: 15px;
 }

@@ -11,6 +11,7 @@
    $email = $_POST["email"];
    $password = $_POST["password"];
    $repPassword = $_POST["repPassword"];
+
    if (strlen($nome) < 2 || strlen($nome) > 60 || !preg_match("/^[a-záàâãäåæçèéêëìíîïðñòóôõøùúûüýþÿı ]*$/i", $nome)) {
       echo "ErrorName";
       exit();
@@ -43,7 +44,7 @@
                   exit();
                } else {
                   $queryProcurarEmail->closeCursor();
-                  if (!preg_match("/^(?=\P{Ll}*\p{Ll})(?=\P{Lu}*\p{Lu})(?=\P{N}*\p{N})(?=[\p{L}\p{N}]*[^\p{L}\p{N}])[\s\S]{8,}$/", $password)) {
+                  if (strlen($password) == 0) {
                      echo "ErrorPassword";
                      exit();
                   } else {

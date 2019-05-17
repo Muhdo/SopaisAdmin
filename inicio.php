@@ -13,7 +13,7 @@
          session_start();
 
          if (!isset($_SESSION["User_Id"])) {
-            header("Location: index.php");
+            echo "<script type='text/javascript'>window.top.location='index.php';</script>";
          } else {
             include_once "includes/header.php";
       ?>
@@ -27,11 +27,18 @@
                <h3>Mensagens Por Responder:</h3>
                <p id="MensagemResponder"></p>
             </div>
-            <progress value="50" max="100" id="MensagemResponderProg">1000%</progress>
+            <progress value="0" max="100" id="MensagemResponderProg">0%</progress>
             <div class="div-campos">
                <h3>Noticias Totais:</h3>
                <p id="NoticiasTotais"></p>
             </div>
+            <div class="div-campos">
+               <h3>Contas Totais:</h3>
+               <p id="ContasTotais"></p>
+            </div>
+         </div>
+         <div class="div-btn-cont">
+            <button type="button" name="contas" onClick="window.top.location='contas.php';">Gerir Contas</button>
          </div>
       </main>
       <script>
@@ -46,6 +53,7 @@
                   $("#MensagemResponderProg").val(output.ResponderPerc);
                   $("#MensagemResponderProg").html(output.ResponderPerc + "%");
                   $("#NoticiasTotais").html(output.Noticias);
+                  $("#ContasTotais").html(output.Contas);
                }
             });
          });

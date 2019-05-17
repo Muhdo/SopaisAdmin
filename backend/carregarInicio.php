@@ -31,10 +31,19 @@
 
    $queryContarNoticias->closeCursor();
 
+   $queryContarContas = $connection->prepare("SELECT COUNT(Key_User) AS 'Contagem' FROM User");
+   $queryContarContas->execute();
+
+   $resultado = $queryContarContas->fetchAll();
+   $Contas = $resultado[0]["Contagem"];
+
+   $queryContarNoticias->closeCursor();
+
    $return_arr = array("Mensagens" => $Mensagens,
       "Responder" => $Responder,
       "ResponderPerc" => $ResponderPerc,
-      "Noticias" => $Noticias
+      "Noticias" => $Noticias,
+      "Contas" => $Contas
    );
 
    echo json_encode($return_arr);

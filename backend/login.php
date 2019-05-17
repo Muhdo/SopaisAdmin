@@ -4,7 +4,7 @@
    $user = $_POST["user"];
    $password = $_POST["password"];
 
-   $queryLogin = $connection->prepare("SELECT * FROM user WHERE Username = :user OR Email = :user");
+   $queryLogin = $connection->prepare("SELECT * FROM User WHERE Username = :user OR Email = :user");
 
    $queryLogin->bindParam(":user", $user, PDO::PARAM_STR);
    $queryLogin->execute();

@@ -18,7 +18,7 @@
          session_start();
 
          if (!isset($_SESSION["User_Id"])) {
-            header("Location: index.php");
+            echo "<script type='text/javascript'>window.top.location='index.php';</script>";
          } else {
             include_once "includes/header.php";
       ?>

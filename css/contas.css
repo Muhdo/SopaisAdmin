@@ -1,0 +1,105 @@
+table {
+   max-width: 100%;
+   width: 100%;
+}
+
+tr>th {
+   color: #FFFFFF;
+   background-color: #535353;
+}
+
+table, tr, tr>th {
+   border: solid 1px #000000;
+   border-collapse: collapse;
+}
+
+tr {
+   font-size: 14px;
+   font-weight: bold;
+   background-color: #B5B6B9;
+}
+
+.div-campos {
+   width: 100%;
+   display: flex;
+   flex-direction: row;
+}
+
+.div-campos > h2 {
+   width: 142px;
+   text-align: right;
+}
+
+.div-campos > p, .div-campos > a {
+   height: auto;
+   margin: auto 10px;
+}
+
+.div-mensagem {
+   display: flex;
+   flex-direction: column;
+}
+
+.div-mensagem > p {
+   margin: 10px;
+}
+
+.div_campos, .div-mensagem {
+   margin-left: 10px;
+}
+
+.btn-delete {
+   height: 30px;
+   width: calc(100% - 20px);
+   margin: 5px 10px;
+   background-color: #CC3E3E;
+   border: 0px;
+   border-radius: 5px;
+   font-size: 14px;
+   color: #FFFFFF;
+   transition: all 0.5s ease;
+   -moz-transition: all 0.5s ease;
+   -webkit-transition: all 0.5s ease;
+}
+
+form {
+   margin: 30px;
+}
+
+form p {
+   color: #273B7B;
+   margin: 10px 0px 5px 5px;
+}
+
+.p-error {
+   text-align: center;
+   margin: 0px;
+   margin-top: 12px;
+   color: #FB3535;
+}
+
+form input[type="text"], form input[type="email"], form input[type="password"] {
+   height: 30px;
+   width: calc(100% - 20px);
+   background-color: #DDDDDD;
+   border-radius: 5px;
+   border: solid 1px #FFFFFF;
+   padding-left: 10px;
+   padding-right: 10px;
+   font-size: 14px;
+}
+
+form input[type="submit"] {
+   position: absolute;
+   bottom: 10px;
+   left: 10px;
+}
+
+.hidden {
+   display: none;
+}
+
+.form-input-erro {
+	box-shadow: inset 2px 2px #FF0000, inset -2px -2px #FF0000, inset 2px -2px #FF0000, inset -2px 2px #FF0000;
+	border-radius: 0.2em;
+}

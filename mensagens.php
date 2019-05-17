@@ -15,7 +15,7 @@
          session_start();
 
          if (!isset($_SESSION["User_Id"])) {
-            header("Location: index.php");
+            echo "<script type='text/javascript'>window.top.location='index.php';</script>";
          } else {
             include_once "includes/header.php";
       ?>
@@ -27,7 +27,7 @@
                $contagem;
                $ultimoPost = 0;
 
-               $queryVerificar = $connection->prepare("SELECT COUNT(key_Mensagem) AS 'Contagem' FROM Mensagem");
+               $queryVerificar = $connection->prepare("SELECT COUNT(Key_Mensagem) AS 'Contagem' FROM Mensagem");
                $queryVerificar->execute();
 
                if ($queryVerificar->rowCount() == 0) {
@@ -132,7 +132,7 @@
                      output = JSON.parse(output);
                      $("#Nome").html(output.Nome);
                      $("#Email").html(output.Email);
-                     $("#Email").attr("href", "mailto:" + output.Email + "?Subject=Resposta%20%C3%A0%20mensagem%20na%20Sopais")
+                     $("#Email").attr("href", "mailto:" + output.Email + "?Subject=Resposta%20%C3%A0%20mensagem%20no%20site%20da%20Sopais")
                      $("#Data").html(output.Data);
                      $("#Mensagem").html(output.Mensagem);
 
